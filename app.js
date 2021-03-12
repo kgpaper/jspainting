@@ -1,35 +1,46 @@
 const canvas = document.getElementById("jsCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = 700;
+canvas.height = 700;
 
 let painting = false;
 
-function stopPainting(event){
+ctx.strokeStyle = "#2c2c2c";
+ctx.lineWidth = 2.5;
 
+function stopPainting(event) {
+  painting = false;
 }
 
-function onMouseMove(event){
+function startPainting(event) {
+  painting = true;
+}
+
+function onMouseMove(event) {
   // 해당 캔버스의 좌표값인 offsetX, offsetY를 이용
   const x = event.offsetX;
   const y = event.offsetY;
-
+  if (!painting) {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  } else {
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
 }
 
-function onMouseDown(event){
+function onMouseDown(event) {
   painting = true;
-
 }
 
-function onMouseUp(event){
-  stopPainting();
-}
-
-
-if(canvas){
+if (canvas) {
   // mousemove : 마우스 움직임 감지
   canvas.addEventListener("mousemove", onMouseMove);
   // mousedown : 마우스 클릭 감지
-  canvas.addEventListener("mousedown", onMouseDown);
+  canvas.addEventListener("mousedown", startPainting);
   // mouseup : 마우스 클릭 후 클릭해제 감지
-  canvas.addEventListener("mouseup", onMouseUp);
+  canvas.addEventListener("mouseup", stopPainting);
   // mouseleave : 해당 객체에서 마우스가 벗어나는 것을 감지
   canvas.addEventListener("mouseleave", stopPainting);
 }
